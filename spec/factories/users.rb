@@ -12,7 +12,15 @@ FactoryGirl.define do
     factory :unapproved_user do
       approved false
     end
-      
+
+    factory :technician do
+      role "technician"
+    end      
+    
+    factory :superuser do
+      role "superuser"
+    end
+    
   end
   
   # factory :model do

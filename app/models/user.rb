@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   
   # Set out different user roles available
   def self.roles
-    ['user', 'superuser', 'admin']
+    ['user', 'technician', 'superuser']
   end
          
   validates :firstname, presence: true, length: { maximum: 30 }
@@ -20,6 +20,7 @@ class User < ActiveRecord::Base
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: { case_sensitive: false }
   
+  # validates_inclusion_of :role, in: self.roles
   validates_inclusion_of :role, in: self.roles
   validate :name_has_no_numbers
   
