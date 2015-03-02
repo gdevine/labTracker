@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Menu Panel", type: :feature do
+RSpec.describe "Menu Panel - ", type: :feature do
 
   subject { page }
   
@@ -119,34 +119,110 @@ RSpec.describe "Menu Panel", type: :feature do
 #     
 # 
   # end 
-#    
-#    
-  # # Instrument dropdown links
-#   
-  # describe "opening the Instruments dropdown" do
-# 
-    # describe "when signed in" do
-      # before do 
-        # sign_in(user) 
-        # visit root_path
-      # end
-#       
-      # it "should show a link for 'Create New' Instrument" do
-        # expect(page).to have_link('instruments_new')
-      # end
-      # it "should show a link for 'View All' Instrument" do
-        # expect(page).to have_link('instruments_index')
-      # end
-#       
-      # describe "and clicking the View All link" do
-        # before do
-          # click_link('instruments_index')
-        # end
-#     
-        # it "should open up the View All page" do
-          # expect(page).to have_title('Instrument List')
-        # end
-      # end
+    
+
+  # Analysis Type dropdown   
+  describe "Opening the Analysis Types dropdown" do
+  
+    describe "when not signed in" do
+      before { visit root_path }
+      it 'should not be possible' do
+        expect(page).not_to have_link('Analysis Types')
+      end
+    end
+
+    describe "when signed in as a user" do
+      before do 
+        sign_in(user) 
+        visit root_path
+      end
+      
+      it "should show a main link for 'Analysis Types'" do
+        expect(page).to have_link('Analysis Types')
+      end
+      it "should show a link for 'View All' Analysis Types" do
+        expect(page).to have_link('analysis_types_index')
+      end
+      it "should not show a link for 'Add New' Analysis Type" do
+        expect(page).not_to have_link('analysis_types_new')
+      end  
+          
+      describe "and clicking the View All link" do
+        before do
+          click_link('analysis_types_index')
+        end
+    
+        it "should open up the View All page" do
+          expect(page).to have_content('Available Analysis Types')
+        end
+      end
+    end
+    
+    describe "when signed in as a technician" do
+      before do 
+        sign_in(technician) 
+        visit root_path
+      end
+      
+      it "should show a main link for 'Analysis Types'" do
+        expect(page).to have_link('Analysis Types')
+      end
+      it "should show a link for 'View All' Analysis Types" do
+        expect(page).to have_link('analysis_types_index')
+      end
+      it "should not show a link for 'Add New' Analysis Type" do
+        expect(page).not_to have_link('analysis_types_new')
+      end  
+          
+      describe "and clicking the View All link" do
+        before do
+          click_link('analysis_types_index')
+        end
+    
+        it "should open up the View All page" do
+          expect(page).to have_content('Available Analysis Types')
+        end
+      end
+    end
+    
+    describe "when signed in as a superuser" do
+      before do 
+        sign_in(superuser) 
+        visit root_path
+      end
+      
+      it "should show a main link for 'Analysis Types'" do
+        expect(page).to have_link('Analysis Types')
+      end
+      it "should show a link for 'View All' Analysis Types" do
+        expect(page).to have_link('analysis_types_index')
+      end
+      it "should show a link for 'Add New' Analysis Type" do
+        expect(page).to have_link('analysis_types_new')
+      end  
+          
+      describe "and clicking the View All link" do
+        before do
+          click_link('analysis_types_index')
+        end
+    
+        it "should open up the View All page" do
+          expect(page).to have_content('Available Analysis Types')
+        end
+      end
+      
+      describe "and clicking the Create New link" do
+        before do
+          click_link('analysis_types_new')
+        end
+    
+        it "should open up the Create New page" do
+          expect(page).to have_title('Create New Analysis Type')
+        end
+      end
+    end
+    
+    
 #       
       # describe "and clicking the View Lost Instruments link" do
         # before do
@@ -198,23 +274,9 @@ RSpec.describe "Menu Panel", type: :feature do
           # expect(page).to have_title('New Instrument')
         # end
       # end
-#     
-    # end
-#     
-    # describe "when not signed in" do
-      # before do
-        # visit root_path
-      # end
-#       
-      # it "should not show a link for 'Create New' Instrument" do
-        # expect(page).not_to have_link('instruments_new')
-      # end
-      # it "should show a link for 'View All' Instrument" do
-        # expect(page).to have_link('instruments_index')
-      # end
-    # end
-#     
-  # end
+    
+   
+  end
 #   
 #   
 # # Resources menu

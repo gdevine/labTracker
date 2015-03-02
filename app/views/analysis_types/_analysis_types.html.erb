@@ -1,0 +1,19 @@
+<% if @analysis_types.any? %>
+  <table class="table table-bordered table-striped table-hover" id="analysis_types">
+    <thead>
+      <tr>
+        <th>Analysis Type ID</th>
+        <th>Name</th>
+        <th>Instrument</th>
+        <th>Description</th>
+        <th>View?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= render partial: 'analysis_types/analysis_types_table', collection: @analysis_types, as: :analysis_type %>
+    </tbody>
+  </table>
+  
+<% else %>
+  <p>No Analysis Types found</p>
+<% end %>

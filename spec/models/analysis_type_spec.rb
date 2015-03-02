@@ -26,5 +26,15 @@ RSpec.describe AnalysisType, type: :model do
     before { @analysis_type.name = "a" * 81 }
     it { should_not be_valid }
   end
+  
+  #Uniqueness checks
+  describe "when analysis type name is not unique" do    
+    before do
+      at_same_name = @analysis_type.dup
+      at_same_name.save
+    end
+    
+    it { should_not be_valid } 
+  end
 
 end

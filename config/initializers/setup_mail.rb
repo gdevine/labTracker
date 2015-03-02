@@ -1,4 +1,4 @@
-ActionMailer::Base.delivery_method = :sendmail
+# ActionMailer::Base.delivery_method = :sendmail
 
 ActionMailer::Base.sendmail_settings = {
   :address              => "smtp.gmail.com",

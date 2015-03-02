@@ -104,7 +104,7 @@ describe User do
   
   # role checks
   describe "check that an admin role is valid" do
-    before {@user.role = 'admin'}
+    before {@user.role = 'superuser'}
     it { should be_valid }
   end
 

@@ -38,9 +38,11 @@ class Ability
     end
     
     if user.role == "technician"
+      can :index, AnalysisType 
     end
     
     if user.role == "user"
+      can :index, AnalysisType
     end
     
   end
