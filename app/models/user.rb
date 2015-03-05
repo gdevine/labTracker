@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   
   # Set out different user roles available
   def self.roles
-    ['user', 'technician', 'superuser']
+    ['unassigned', 'researcher', 'technician', 'superuser']
   end
          
   validates :firstname, presence: true, length: { maximum: 30 }

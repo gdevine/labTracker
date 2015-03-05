@@ -33,16 +33,16 @@ class Ability
     
     alias_action :create, :read, :update, :destroy, :to => :crud
     
-    if user.role == "superuser"
+    if user.role == "superuser" && user.approved == true
       can :crud, :all
     end
     
-    if user.role == "technician"
-      can :index, AnalysisType 
+    if user.role == "technician" && user.approved == true
+      can [:index, :show], AnalysisType 
     end
     
-    if user.role == "user"
-      can :index, AnalysisType
+    if user.role == "researcher" && user.approved == true
+      can [:index, :show], AnalysisType
     end
     
   end

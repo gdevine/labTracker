@@ -16,17 +16,17 @@ Rails.application.configure do
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = true
   ## SHUTTING THIS OFF FOR DEV
-  # config.action_mailer.perform_deliveries = true
-  # config.action_mailer.delivery_method = :smtp
-  # config.action_mailer.smtp_settings = {
-    # :address              => "smtp.gmail.com",
-    # :port                 => "587",
-    # :domain               => "hiesampletracker.com",
-    # :user_name            => "hiedatamanager",
-    # :password             => "DM_Hawkesbury1",
-    # :authentication       => "plain",
-    # :enable_starttls_auto => true
-  # }
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    :address              => "smtp.gmail.com",
+    :port                 => "587",
+    :domain               => "hiesampletracker.com",
+    :user_name            => "hiedatamanager",
+    :password             => "DM_Hawkesbury1",
+    :authentication       => "plain",
+    :enable_starttls_auto => true
+  }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

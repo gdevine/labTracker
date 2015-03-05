@@ -13,5 +13,8 @@
 //= require jquery
 //= require jquery-ui
 //= require jquery_ujs
+//= require dataTables/jquery.dataTables
 //= require bootstrap
+//= require bootstrap/dropdown
+//= require_tree .
 

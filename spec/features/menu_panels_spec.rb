@@ -4,9 +4,11 @@ RSpec.describe "Menu Panel - ", type: :feature do
 
   subject { page }
   
-  let(:user) { FactoryGirl.create(:user) }
-  let(:technician) { FactoryGirl.create(:technician) }
-  let(:superuser)  { FactoryGirl.create(:superuser) }
+  let(:user)            { FactoryGirl.create(:user) }
+  let(:unapproved_user) { FactoryGirl.create(:unapproved_user) }
+  let(:researcher)      { FactoryGirl.create(:researcher) }
+  let(:technician)      { FactoryGirl.create(:technician) }
+  let(:superuser)       { FactoryGirl.create(:superuser) }
   
   # Checking that the menu bar appears when it's supposed to
   describe "Home page" do
@@ -18,9 +20,31 @@ RSpec.describe "Menu Panel - ", type: :feature do
       end
     end
     
-    describe "for signed-in users" do
+    describe "for signed-in researchers" do
       before do 
-        sign_in(user) 
+        sign_in(researcher) 
+        visit root_path
+      end
+        
+      it 'should have a nav#minibar bar' do
+        expect(page).to have_selector('nav#minibar')
+      end
+    end
+    
+    describe "for unapproved users" do
+      before do 
+        sign_in(unapproved_user) 
+        visit root_path
+      end
+      
+      it 'should not have a nav#minibar bar' do
+        expect(page).not_to have_selector('nav#minibar')
+      end
+    end
+
+    describe "for signed-in researchers" do
+      before do 
+        sign_in(researcher) 
         visit root_path
       end
         
@@ -40,7 +64,7 @@ RSpec.describe "Menu Panel - ", type: :feature do
       end
     end
  
-     describe "for signed-in superusers" do
+    describe "for signed-in superusers" do
       before do 
         sign_in(superuser) 
         visit root_path
@@ -50,14 +74,27 @@ RSpec.describe "Menu Panel - ", type: :feature do
         expect(page).to have_selector('nav#minibar')
       end
     end
+    
+    describe "for superusers who've been marked unapproved" do
+      before do 
+        superuser.approved = false
+        superuser.save
+        sign_in(superuser) 
+        visit root_path
+      end
+        
+      it 'should not have a nav#minibar bar' do
+        expect(page).not_to have_selector('nav#minibar')
+      end
+    end
         
   end
   
   # The menu bar should appear on the standard static pages: contact page, about page etc if logged in
   describe "Help page" do
-    describe "for signed-in users" do
+    describe "for signed-in researchers" do
       before do 
-        sign_in(user)
+        sign_in(researcher)
         visit help_path
       end
       it 'should have a nav#minibar bar' do
@@ -128,12 +165,13 @@ RSpec.describe "Menu Panel - ", type: :feature do
       before { visit root_path }
       it 'should not be possible' do
         expect(page).not_to have_link('Analysis Types')
+        expect(page).not_to have_link('analysis_types_index')
       end
     end
 
-    describe "when signed in as a user" do
+    describe "when signed in as a researcher" do
       before do 
-        sign_in(user) 
+        sign_in(researcher) 
         visit root_path
       end
       
@@ -217,9 +255,11 @@ RSpec.describe "Menu Panel - ", type: :feature do
         end
     
         it "should open up the Create New page" do
-          expect(page).to have_title('Create New Analysis Type')
+          expect(page).to have_title('New Analysis Type')
+          expect(page).to have_selector('h2', text: "New Analysis Type")
         end
       end
+      
     end
     
     

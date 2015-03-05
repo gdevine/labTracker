@@ -6,13 +6,17 @@ FactoryGirl.define do
     email { Faker::Internet.free_email }
     password "foobar100"
     password_confirmation "foobar100"   
-    role 'user'
+    role 'unassigned'
     approved true
     
     factory :unapproved_user do
       approved false
     end
 
+    factory :researcher do
+      role "researcher"
+    end    
+    
     factory :technician do
       role "technician"
     end      

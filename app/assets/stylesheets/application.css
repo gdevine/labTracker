@@ -11,8 +11,9 @@
  * file per style scope.
  *
  *= require_self
+ *= require dataTables/jquery.dataTables 
+ *= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
  *= require jquery-ui
  *= require bootstrap
- *= require sandstone
  *= require custom
  */

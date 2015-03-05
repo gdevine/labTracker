@@ -21,6 +21,7 @@ gem 'devise'
 gem 'activeadmin', github: 'activeadmin'
 gem 'cancancan', '~> 1.10'
 gem 'bootstrap-sass', '~> 3.3.3'
+gem 'jquery-datatables-rails', '~> 3.1.1'
 
 
 group :development, :test do
