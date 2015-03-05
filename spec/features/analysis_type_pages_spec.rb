@@ -4,9 +4,143 @@ RSpec.describe "AnalysisTypes", type: :feature do
   
   subject { page }
   
-  let(:researcher)       { FactoryGirl.create(:researcher) }
+  let(:researcher) { FactoryGirl.create(:researcher) }
   let(:technician) { FactoryGirl.create(:technician) }
   let(:superuser)  { FactoryGirl.create(:superuser) }
+  
+  
+  describe "Index page" do
+    
+    describe "for non signed-in users" do
+      describe "should be redirected to home page with access error message" do
+        before { visit analysis_types_path }
+        it { should have_title('HIE Lab Tracker | Home') }
+        it { should have_content("You are not authorized to access this page.") }
+      end
+    end
+    
+    describe "for researchers" do
+      before { sign_in researcher }
+      
+      describe "with no analysis types in the system" do
+        before { visit analysis_types_path }
+        
+        it { should have_title('Analysis Types') }
+        it { should_not have_title('| Home') }  
+        it { should have_selector('h2', text: "Available Analysis Types") }
+        it "should have an information message" do
+          expect(page).to have_content('No Analysis Types found')
+        end
+      end
+    
+      describe "with analysis types in the system" do
+        before do 
+          @at1 = FactoryGirl.create(:analysis_type)
+          @at2 = FactoryGirl.create(:analysis_type)
+          @at3 = FactoryGirl.create(:analysis_type)
+          visit analysis_types_path
+        end
+        
+        it { should have_content('Name') }
+        it { should have_content('Instrument') }
+        it { should have_content('Description') }
+        it { should have_content(@at1.name) }
+        it { should have_content(@at2.name) }
+        it { should have_content(@at3.name) }
+        it { should have_link('View', :href => analysis_type_path(@at1)) }
+        it { should have_link('View', :href => analysis_type_path(@at3)) }
+        it { should have_link('View', :href => analysis_type_path(@at3)) }
+        
+        describe "should navigate to correct page on following view link" do
+          before { find("a[href='#{analysis_type_path(@at1)}']").click }
+          it { should have_selector('h2', text: "Analysis Type " + @at1.id.to_s) }  
+        end
+      
+      end
+    end
+    
+    describe "for technicians" do
+      before { sign_in technician }
+      
+      describe "with no analysis types in the system" do
+        before { visit analysis_types_path }
+        
+        it { should have_title('Analysis Types') }
+        it { should_not have_title('| Home') }  
+        it { should have_selector('h2', text: "Available Analysis Types") }
+        it "should have an information message" do
+          expect(page).to have_content('No Analysis Types found')
+        end
+      end
+    
+      describe "with analysis types in the system" do
+        before do 
+          @at1 = FactoryGirl.create(:analysis_type)
+          @at2 = FactoryGirl.create(:analysis_type)
+          @at3 = FactoryGirl.create(:analysis_type)
+          visit analysis_types_path
+        end
+        
+        it { should have_content('Name') }
+        it { should have_content('Instrument') }
+        it { should have_content('Description') }
+        it { should have_content(@at1.name) }
+        it { should have_content(@at2.name) }
+        it { should have_content(@at3.name) }
+        it { should have_link('View', :href => analysis_type_path(@at1)) }
+        it { should have_link('View', :href => analysis_type_path(@at3)) }
+        it { should have_link('View', :href => analysis_type_path(@at3)) }
+        
+        describe "should navigate to correct page on following view link" do
+          before { find("a[href='#{analysis_type_path(@at1)}']").click }
+          it { should have_selector('h2', text: "Analysis Type " + @at1.id.to_s) }  
+        end
+      
+      end
+    end
+    
+    
+    describe "for superusers" do
+      before { sign_in superuser }
+      
+      describe "with no analysis types in the system" do
+        before { visit analysis_types_path }
+        
+        it { should have_title('Analysis Types') }
+        it { should_not have_title('| Home') }  
+        it { should have_selector('h2', text: "Available Analysis Types") }
+        it "should have an information message" do
+          expect(page).to have_content('No Analysis Types found')
+        end
+      end
+    
+      describe "with analysis types in the system" do
+        before do 
+          @at1 = FactoryGirl.create(:analysis_type)
+          @at2 = FactoryGirl.create(:analysis_type)
+          @at3 = FactoryGirl.create(:analysis_type)
+          visit analysis_types_path
+        end
+        
+        it { should have_content('Name') }
+        it { should have_content('Instrument') }
+        it { should have_content('Description') }
+        it { should have_content(@at1.name) }
+        it { should have_content(@at2.name) }
+        it { should have_content(@at3.name) }
+        it { should have_link('View', :href => analysis_type_path(@at1)) }
+        it { should have_link('View', :href => analysis_type_path(@at3)) }
+        it { should have_link('View', :href => analysis_type_path(@at3)) }
+        
+        describe "should navigate to correct page on following view link" do
+          before { find("a[href='#{analysis_type_path(@at1)}']").click }
+          it { should have_selector('h2', text: "Analysis Type " + @at1.id.to_s) }  
+        end
+      
+      end
+    end
+   
+  end
 
 
   describe "New page" do
@@ -109,8 +243,6 @@ RSpec.describe "AnalysisTypes", type: :feature do
   end
   
   
-  
-  
   describe "Show page" do
            
     before do 
@@ -200,252 +332,13 @@ RSpec.describe "AnalysisTypes", type: :feature do
         before { click_link "Edit Analysis Type" }
         let!(:page_heading) {"Edit Analysis Type " + @analysis_type.id.to_s}
         
-        # describe 'should have a page heading for editing the correct analysis_type' do
-          it { should have_content(page_heading) }
-        # end          
+        it { should have_content(page_heading) }
       end
       
     end
     
   end
 
-
-# 
-# 
-#     
-    # describe "for signed-in users who are an owner" do
-#       
-      # before do 
-        # sign_in(user) 
-        # visit instrument_path(@instrument)
-      # end
-#       
-      # let!(:page_heading) {"Instrument " + @instrument.id.to_s}
-#       
-      # it { should have_selector('h2', :text => page_heading) }
-      # it { should have_title(full_title('Instrument View')) }
-      # it { should_not have_title('| Home') }  
-      # it { should have_content('Serial Number') }
-      # it { should have_link('Options') }
-      # it { should have_link('Edit Instrument') }
-      # it { should have_link('Delete Instrument') }
-      # it { should have_link('Add Service Record') }
-      # it { should have_link('Instrument Loan') }
-      # it { should have_link('Instrument Lost') }
-      # it { should have_link('Instrument Storage') }
-      # it { should have_link('FACE Deployment') }
-#       
-      # it { should have_content('None assigned') }
-#       
-      # describe 'should see model details' do
-        # it { should have_content('Manufacturer') }
-      # end
-#       
-      # describe 'should see current status' do
-        # it { should have_content('Current Status') }
-      # end
-#       
-      # describe 'should have correct current status details' do
-        # let!(:newest_status) { FactoryGirl.create(:lost, startdate:Date.today, instrument:@instrument) }
-#         
-        # before { visit instrument_path(@instrument) }
-#         
-        # it { should have_content('Lost') }
-        # it { should have_content('View Details') }
-      # end
-#       
-      # describe "when clicking the edit button" do
-        # before { click_link "Edit Instrument" }
-        # let!(:page_heading) {"Edit Instrument " + @instrument.id.to_s}
-#         
-        # describe 'should have a page heading for editing the correct instrument' do
-          # it { should have_content(page_heading) }
-        # end
-      # end 
-#       
-      # describe "when clicking the add service button" do
-        # before { click_link "Add Service Record" }
-        # let!(:page_heading) {"New Service Record for Instrument " + @instrument.id.to_s}
-#         
-        # describe 'should have a page heading for the correct service record' do
-          # it { should have_content(page_heading) }
-        # end
-      # end 
-#       
-      # describe "when clicking the instrument loan button" do
-        # before { click_link "Instrument Loan" }
-        # let!(:page_heading) {"New Loan Record for Instrument " + @instrument.id.to_s}
-#         
-        # describe 'should have a page heading for the correct service record' do
-          # it { should have_content(page_heading) }
-        # end
-      # end 
-#       
-      # describe "when clicking the instrument lost button" do
-        # before { click_link "Instrument Lost" }
-        # let!(:page_heading) {"New Lost Record for Instrument " + @instrument.id.to_s}
-#         
-        # describe 'should have a page heading for the correct service record' do
-          # it { should have_content(page_heading) }
-        # end
-      # end 
-#  
-      # describe "when clicking the face deployment button" do
-        # before { click_link "FACE Deployment" }
-        # let!(:page_heading) {"New FACE Deployment Record for Instrument " + @instrument.id.to_s}
-#         
-        # describe 'should have a page heading for the correct service record' do
-          # it { should have_content(page_heading) }
-        # end
-      # end 
-#  
-      # describe "when clicking the storage button" do
-        # before { click_link "Instrument Storage" }
-        # let!(:page_heading) {"New In Storage Record for Instrument " + @instrument.id.to_s}
-#         
-        # describe 'should have a page heading for the correct status record' do
-          # it { should have_content(page_heading) }
-        # end
-      # end 
-#            
-      # describe "should show correct user/owner associations" do
-        # let!(:new_user1) { FactoryGirl.create(:user) }
-        # let!(:new_user2) { FactoryGirl.create(:user) }
-#         
-        # before do         
-          # @instrument.users << new_user1
-          # @instrument.users << new_user2
-          # visit instrument_path(@instrument)
-        # end
-#         
-        # it { should have_content('Contacts for this Instrument') }
-        # it { should have_content(user.firstname) }  
-        # it { should have_content(new_user1.firstname) }  
-        # it { should have_content(new_user2.firstname) }  
-#               
-      # end
-#       
-      # describe "should show correct services associations" do
-        # let!(:first_service) { FactoryGirl.create(:service, instrument_id:@instrument.id ) }
-        # let!(:second_service) { FactoryGirl.create(:service, instrument_id:@instrument.id ) }
-#         
-        # before do 
-          # visit instrument_path(@instrument)
-        # end
-#         
-        # it { should have_content('Service History for this Instrument') }
-        # it { should have_selector('table tr th', text: 'Service ID') } 
-        # it { should have_selector('table tr td', text: first_service.id) } 
-        # it { should have_selector('table tr td', text: second_service.id) }             
-      # end
-#       
-#       
-      # describe "should show correct statuses associations" do
-        # let!(:first_status) { FactoryGirl.create(:loan, instrument_id:@instrument.id, reporter: user ) }
-        # let!(:second_status) { FactoryGirl.create(:lost, instrument_id:@instrument.id, reporter: user ) }
-        # let!(:third_status) { FactoryGirl.create(:facedeployment, instrument_id:@instrument.id, reporter: user ) }
-#         
-        # before do 
-          # visit instrument_path(@instrument)
-        # end
-#         
-        # it { should have_content('Status History for this Instrument') }
-        # it { should have_selector('table tr th', text: 'ID') } 
-        # it { should have_selector('table tr td', text: first_status.id) } 
-        # it { should have_selector('table tr td', text: second_status.id) }             
-        # it { should have_selector('table tr td', text: third_status.id) }             
-      # end
-#       
-    # end
-#     
-    # describe "who don't own the current instrument" do
-       # let(:non_owner) { FactoryGirl.create(:user) }
-       # before do 
-         # sign_in(non_owner)
-         # visit instrument_path(@instrument)
-       # end 
-#        
-       # let!(:page_heading) {"Instrument " + @instrument.id.to_s}
-#         
-       # describe 'should have a page heading for the correct instrument' do
-          # it { should have_selector('h2', :text => page_heading) }
-       # end
-#        
-       # describe 'should see model details' do
-          # it { should have_content('Manufacturer') }
-       # end
-#        
-       # describe "should not see the edit and delete buttons" do
-         # it { should_not have_link('Edit Container') }
-         # it { should_not have_link('Delete Container') }
-       # end 
-#        
-       # describe "should show correct services associations" do
-        # let!(:first_service) { FactoryGirl.create(:service, instrument_id:@instrument.id ) }
-        # let!(:second_service) { FactoryGirl.create(:service, instrument_id:@instrument.id ) }
-#         
-        # before do 
-          # visit instrument_path(@instrument)
-        # end
-#         
-        # it { should have_content('Service History for this Instrument') }
-        # it { should have_selector('table tr th', text: 'Service ID') } 
-        # it { should have_selector('table tr td', text: first_service.id) } 
-        # it { should have_selector('table tr td', text: second_service.id) } 
-#               
-      # end
-    # end
-#     
-    # describe "for non signed-in users" do
-      # describe "should still see the page but have no option button be redirected back to signin" do
-        # before do 
-         # visit instrument_path(@instrument)
-        # end 
-#         
-        # let!(:page_heading) {"Instrument " + @instrument.id.to_s}
-#         
-        # describe 'should have a page heading for the correct instrument' do
-          # it { should have_selector('h2', :text => page_heading) }
-        # end
-#         
-        # describe 'should see model details' do
-          # it { should have_content('Manufacturer') }
-        # end
-#        
-        # describe "should not see the edit and delete buttons" do
-          # it { should_not have_link('Edit Container') }
-          # it { should_not have_link('Delete Container') }
-        # end 
-#         
-        # describe "should show correct services associations" do
-          # let!(:first_service) { FactoryGirl.create(:service, instrument_id:@instrument.id ) }
-          # let!(:second_service) { FactoryGirl.create(:service, instrument_id:@instrument.id ) }
-#           
-          # before do 
-            # visit instrument_path(@instrument)
-          # end
-#           
-          # it { should have_content('Service History for this Instrument') }
-          # it { should have_selector('table tr th', text: 'Service ID') } 
-          # it { should have_selector('table tr td', text: first_service.id) } 
-          # it { should have_selector('table tr td', text: second_service.id) } 
-#                 
-        # end
-#         
-      # end
-    # end
-#     
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
   describe "Edit page" do
     
@@ -574,90 +467,30 @@ RSpec.describe "AnalysisTypes", type: :feature do
   
     end  
     
-    
-    
-    
-    # describe "for signed-in users who are an owner" do
-#       
-      # before do 
-        # sign_in(user) 
-        # visit edit_instrument_path(@instrument)
-      # end 
-#       
-      # it { should have_content('Edit Instrument ' + @instrument.id.to_s) }
-      # it { should have_title(full_title('Edit Instrument')) }
-      # it { should_not have_title('| Home') }
-#       
-      # describe "with invalid serial number information" do
-#         
-          # before do
-            # fill_in 'instrument_serialNumber', with: ''
-            # click_button "Update"
-          # end
-#           
-          # describe "should return an error" do
-            # it { should have_content('error') }
-          # end
-#   
-      # end
-#       
-      # describe "with invalid model choice" do
-#         
-          # before do
-            # find('#models').find(:xpath, 'option[1]').select_option
-            # click_button "Update"
-          # end
-#           
-          # describe "should return an error" do
-            # it { should have_content("Model is required") }
-          # end
-#   
-      # end
-#   
-      # describe "with valid information" do
-#   
-        # before do
-          # fill_in 'instrument_serialNumber'  , with: 'dummyserial'
-          # fill_in 'instrument_price'   , with: 678.00
-        # end
-#         
-        # it "should update, not add an instrument" do
-          # expect { click_button "Update" }.not_to change(Instrument, :count).by(1)
-        # end
-#         
-        # describe "should return to view page" do
-          # before { click_button "Update" }
-          # it { should have_content('Instrument updated') }
-          # it { should have_title(full_title('Instrument View')) }
-        # end
-#       
-      # end
-#       
-    # end  
-#     
-    # describe "for signed-in users who are not an owner" do
-      # let(:non_owner) { FactoryGirl.create(:user) }
-      # before do 
-        # sign_in(non_owner)
-        # visit edit_instrument_path(@instrument)
-      # end 
-#       
-      # describe 'should have a page heading for the correct instrument' do
-        # it { should_not have_content('Edit') }
-        # it { should have_title('Home') }
-        # it { should have_content('Welcome to HIE Instrument Tracker') }
-      # end
-    # end
-#     
-    # describe "for non signed-in users" do
-      # describe "should be redirected back to signin" do
-        # before { visit edit_instrument_path(@instrument) }
-        # it { should have_title('Sign in') }
-      # end
-    # end
-    
   end
   
   
-
+  describe "Analysis Type Deletion" do
+    
+    before do 
+      @analysis_type = FactoryGirl.create(:analysis_type) 
+      sign_in superuser
+      visit analysis_type_path(@analysis_type)
+    end
+    
+    it "should delete" do
+      expect { click_link "Delete Analysis Type" }.to change(AnalysisType, :count).by(-1)
+    end
+    
+    describe "should revert to analysis type list page with success message and updated info" do
+      before { click_link "Delete Analysis Type" }
+      it { should have_content('Analysis Type Deleted!') }
+      it { should have_content('No Analysis Types found') }
+      it { should have_title(full_title('Analysis Types')) }  
+      it { should_not have_link('View', :href => analysis_type_path(@analysis_type)) }
+    end
+  
+  end
+  
+  
 end

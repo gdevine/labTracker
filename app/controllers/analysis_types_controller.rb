@@ -36,6 +36,12 @@ class AnalysisTypesController < ApplicationController
     end
   end
   
+  def destroy
+    @analysis_type.destroy
+    flash[:success] = "Analysis Type Deleted!"
+    redirect_to analysis_types_path
+  end
+  
   private
 
     def analysis_type_params
