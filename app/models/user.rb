@@ -1,4 +1,10 @@
 class User < ActiveRecord::Base
+  has_many :analysis_type_users, :dependent => :destroy, inverse_of: :user
+  has_many :analysis_types, :through => :instrument_users
+  
+  #return users in alphabetical surname order
+  default_scope -> { order('surname ASC') }
+  
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
