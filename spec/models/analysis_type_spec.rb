@@ -1,7 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe AnalysisType, type: :model do
-  before { @analysis_type = FactoryGirl.build(:analysis_type) }
+  before do 
+    @analysis_type = FactoryGirl.build(:analysis_type) 
+    @technician = FactoryGirl.build(:technician)
+    @analysis_type.technicians << @technician
+  end
+  
   subject { @analysis_type }
 
   it { should respond_to(:name) }
@@ -31,8 +36,10 @@ RSpec.describe AnalysisType, type: :model do
   #Uniqueness checks
   describe "when analysis type name is not unique" do    
     before do
-      at_same_name = @analysis_type.dup
-      at_same_name.save
+      @at_same_name = FactoryGirl.build(:analysis_type) 
+      @at_same_name.technicians << @technician
+      @at_same_name.save
+      @analysis_type.name = @at_same_name.name
     end
     
     it { should_not be_valid } 
@@ -45,10 +52,14 @@ RSpec.describe AnalysisType, type: :model do
     let!(:technician_b) {FactoryGirl.create(:technician, surname: 'brown')}
     
     before do 
-      @analysis_type.save
+      #get rid of the initial technician so to compare the order correctly  
+      @analysis_type.technicians.destroy(@technician)
+      # Add new technicians
       @analysis_type.technicians << technician_b
       @analysis_type.technicians << technician_c
       @analysis_type.technicians << technician_a
+      @analysis_type.save
+      puts @analysis_type.technicians.to_a.first.surname
     end
        
     it "should have associated technicians in alphabetical surname order" do
@@ -58,19 +69,29 @@ RSpec.describe AnalysisType, type: :model do
   end
   
   
-  # describe "only technicians should be able to be added as users" do  
-    # let!(:user) {FactoryGirl.create(:technician)}
-#     
-    # before do 
-      # @analysis_type.save
-      # @analysis_type.technicians << user
-    # end
-#        
-    # it "should have associated users in alphabetical surname order" do
-      # expect(@analysis_type.users.to_a).to eq [user_a, user_b, user_c]
-    # end
-#     
-  # end  
+  describe "researchers should not be able to be added as technicians" do  
+    let!(:researcher) {FactoryGirl.create(:researcher)}
+    
+    before do 
+      @analysis_type.save
+      @analysis_type.technicians << researcher
+    end
+    
+    it { should_not be_valid } 
+    
+  end  
+  
+  describe "superusers should not be able to be added as technicians" do  
+    let!(:superuser) {FactoryGirl.create(:superuser)}
+    
+    before do 
+      @analysis_type.save
+      @analysis_type.technicians << superuser
+    end
+    
+    it { should_not be_valid } 
+    
+  end  
   
 
 end

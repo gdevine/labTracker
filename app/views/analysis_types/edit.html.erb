@@ -26,9 +26,27 @@
   </div>
   
   <div class="form-group">
+  	<%= f.label :user_ids, "Assigned Technicians *", :class => "col-lg-2 control-label"  %>
+    <div class="col-lg-8">
+      <%= f.collection_select :technician_ids, User.where(role:'technician'), :id, :fullname, {include_hidden:true}, { :class=>"form-control", :id=>'technicians', multiple:true } %>
+    </div>
+  </div>
+  
+  <div class="form-group">
     <div class="col-md-4 col-md-offset-4 topspace50 bottomspace">
       <%= f.submit "Update", :class => "btn btn-large btn-primary" %>
     </div>
   </div>
   
 <% end %>
+
+<script type="text/javascript">
+$('#technicians').multiselect({
+    includeSelectAllOption: true,
+    buttonClass : "form-control",
+    buttonWidth: "50%",
+    maxHeight: 400,
+    enableCaseInsensitiveFiltering: true,
+    buttonWidth: '350px'
+});
+</script>

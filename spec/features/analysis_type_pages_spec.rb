@@ -35,9 +35,15 @@ RSpec.describe "AnalysisTypes", type: :feature do
     
       describe "with analysis types in the system" do
         before do 
-          @at1 = FactoryGirl.create(:analysis_type)
-          @at2 = FactoryGirl.create(:analysis_type)
-          @at3 = FactoryGirl.create(:analysis_type)
+          @at1 = FactoryGirl.build(:analysis_type)
+          @at2 = FactoryGirl.build(:analysis_type)
+          @at3 = FactoryGirl.build(:analysis_type)
+          @at1.technicians << technician
+          @at2.technicians << technician
+          @at3.technicians << technician
+          @at1.save
+          @at2.save
+          @at3.save
           visit analysis_types_path
         end
         
@@ -75,9 +81,15 @@ RSpec.describe "AnalysisTypes", type: :feature do
     
       describe "with analysis types in the system" do
         before do 
-          @at1 = FactoryGirl.create(:analysis_type)
-          @at2 = FactoryGirl.create(:analysis_type)
-          @at3 = FactoryGirl.create(:analysis_type)
+          @at1 = FactoryGirl.build(:analysis_type)
+          @at2 = FactoryGirl.build(:analysis_type)
+          @at3 = FactoryGirl.build(:analysis_type)
+          @at1.technicians << technician
+          @at2.technicians << technician
+          @at3.technicians << technician
+          @at1.save
+          @at2.save
+          @at3.save
           visit analysis_types_path
         end
         
@@ -116,9 +128,15 @@ RSpec.describe "AnalysisTypes", type: :feature do
     
       describe "with analysis types in the system" do
         before do 
-          @at1 = FactoryGirl.create(:analysis_type)
-          @at2 = FactoryGirl.create(:analysis_type)
-          @at3 = FactoryGirl.create(:analysis_type)
+          @at1 = FactoryGirl.build(:analysis_type)
+          @at2 = FactoryGirl.build(:analysis_type)
+          @at3 = FactoryGirl.build(:analysis_type)
+          @at1.technicians << technician
+          @at2.technicians << technician
+          @at3.technicians << technician
+          @at1.save
+          @at2.save
+          @at3.save
           visit analysis_types_path
         end
         
@@ -174,10 +192,27 @@ RSpec.describe "AnalysisTypes", type: :feature do
         it { should have_content("You are not authorized to access this page.") }
       end
     end
-    
-    describe "for superusers" do
+
+    describe "for superusers with no technicians in the system" do
       before do
-        sign_in superuser 
+        sign_in superuser
+        visit new_analysis_type_path
+      end
+              
+      describe "should not be able to add a new analysis type" do
+        it { should_not have_title('HIE Lab Tracker | New Analysis Type') }
+        it { should_not have_selector('h2', text: "Create New Analysis Type") }
+        it { should_not have_content('Name') }
+        it { should have_content('New Analysis Types cannot be added until at least one Technician is added to the system. Contact the admin to do this.') }
+      end
+    end
+    
+    describe "for superusers with technicians in the system" do
+      before do
+        @tech1 = FactoryGirl.create(:technician)
+        @tech2 = FactoryGirl.create(:technician)
+        @res1 = FactoryGirl.create(:researcher)
+        sign_in superuser
         visit new_analysis_type_path
       end
               
@@ -185,8 +220,13 @@ RSpec.describe "AnalysisTypes", type: :feature do
         it { should have_title('HIE Lab Tracker | New Analysis Type') }
         it { should have_selector('h2', text: "Create New Analysis Type") }
         it { should have_content('Name') }
+        it { should_not have_content('New Analysis Types cannot be added until at least one Technician is added to the system. Contact the admin to do this.') }
         it { should have_content('Instrument') }
         it { should have_content('Description') }
+        it { should have_content('Assigned Technicians') }
+        it { should have_content(@tech1.fullname) }
+        it { should have_content(@tech2.fullname) }
+        it { should_not have_content(@res1.fullname) }
       end
       
       describe "providing empty information" do                 
@@ -196,7 +236,7 @@ RSpec.describe "AnalysisTypes", type: :feature do
         
         describe "should return an error and revert back" do
           before { click_button "Submit" }
-          it { should have_content('2 errors') }
+          it { should have_content('3 errors') }
           it { should have_selector('h2', text: "Create New Analysis Type") }
         end
       end
@@ -205,7 +245,8 @@ RSpec.describe "AnalysisTypes", type: :feature do
         before do
           fill_in 'analysis_type_name'  , with: 'a'*81
           fill_in 'analysis_type_instrument'  , with: 'Dummy Instrument'
-          fill_in 'analysis_type_description', with: 'This is a description'              
+          fill_in 'analysis_type_description', with: 'This is a description'   
+          find('#technicians').find(:xpath, 'option[2]').select_option           
         end
         
         it "should not create an analysis type" do
@@ -224,17 +265,20 @@ RSpec.describe "AnalysisTypes", type: :feature do
           fill_in 'analysis_type_name'  , with: 'Analysis Type 1'
           fill_in 'analysis_type_instrument'  , with: 'Dummy Instrument'
           fill_in 'analysis_type_description', with: 'This is a description'
+          find('#technicians').find(:xpath, 'option[2]').select_option    
         end
         
         it "should create an analysis type" do
           expect { click_button "Submit" }.to change{AnalysisType.count}.by(1)
         end        
         
-        describe "should revert to instrument view page with success message" do
+        describe "should revert to analysis type view page with success message" do
           before { click_button "Submit" }
           it { should have_content('Analysis Type created!') }
           it { should have_title(full_title('Analysis Type View')) }  
           it { should have_selector('h2', "Analysis Type") }
+          it { should_not have_content(@tech1.fullname) }
+          it { should have_content(@tech2.fullname) }
         end
       end
   
@@ -246,7 +290,9 @@ RSpec.describe "AnalysisTypes", type: :feature do
   describe "Show page" do
            
     before do 
-      @analysis_type = FactoryGirl.create(:analysis_type)
+      @analysis_type = FactoryGirl.build(:analysis_type)
+      @analysis_type.technicians << technician
+      @analysis_type.save
     end
     
     describe "for non signed-in users" do
@@ -270,6 +316,8 @@ RSpec.describe "AnalysisTypes", type: :feature do
         it { should have_content('Name') }
         it { should have_content('Instrument') }
         it { should have_content('Description') }
+        it { should have_content('Assigned Technicians') }
+        it { should have_content(technician.fullname) }
         it { should_not have_link('Options') }
         it { should_not have_link('Edit Analysis Type') }
         it { should_not have_link('Delete Analysis Type') }
@@ -289,6 +337,7 @@ RSpec.describe "AnalysisTypes", type: :feature do
         it { should have_content('Name') }
         it { should have_content('Instrument') }
         it { should have_content('Description') }
+        it { should have_content(technician.fullname) }
         it { should_not have_link('Options') }
         it { should_not have_link('Edit Analysis Type') }
         it { should_not have_link('Delete Analysis Type') }
@@ -323,6 +372,7 @@ RSpec.describe "AnalysisTypes", type: :feature do
         it { should have_content('Name') }
         it { should have_content('Instrument') }
         it { should have_content('Description') }
+        it { should have_content(technician.fullname) }
         it { should have_link('Options') }
         it { should have_link('Edit Analysis Type') }
         it { should have_link('Delete Analysis Type') }
@@ -343,7 +393,9 @@ RSpec.describe "AnalysisTypes", type: :feature do
   describe "Edit page" do
     
     before do 
-      @analysis_type = FactoryGirl.create(:analysis_type)
+      @analysis_type = FactoryGirl.build(:analysis_type)
+      @analysis_type.technicians << technician
+      @analysis_type.save
     end 
     
     describe "for non signed-in users" do
@@ -383,6 +435,11 @@ RSpec.describe "AnalysisTypes", type: :feature do
     
     describe "for superusers" do
       before do
+        @tech1 = FactoryGirl.create(:technician)
+        @tech2 = FactoryGirl.create(:technician)
+        @res1 = FactoryGirl.create(:researcher)
+        @analysis_type.technicians << @tech1
+        @analysis_type.technicians << @tech2
         sign_in superuser 
         visit edit_analysis_type_path(@analysis_type)
       end
@@ -393,6 +450,10 @@ RSpec.describe "AnalysisTypes", type: :feature do
         it { should have_content('Name') }
         it { should have_content('Instrument') }
         it { should have_content('Description') }
+        it { should have_content('Assigned Technicians') }
+        it { should have_content(@tech1.fullname) }
+        it { should have_content(@tech2.fullname) }
+        it { should_not have_content(@res1.fullname) }
       end
       
       describe "not changing any information" do                 
@@ -400,7 +461,7 @@ RSpec.describe "AnalysisTypes", type: :feature do
           expect{ click_button "Update" }.to change{AnalysisType.count}.by(0)
         end             
         
-        describe "should return " do
+        describe "should return to view" do
           before { click_button "Update" }
           it { should have_title('Analysis Type View') }
           it { should have_selector('h2', text: "Analysis Type " + @analysis_type.id.to_s) }
@@ -425,11 +486,30 @@ RSpec.describe "AnalysisTypes", type: :feature do
         end
       end
 
+      describe "removing technicians" do   
+        before do
+          find('#technicians').find(:xpath, 'option[1]').unselect_option  
+          find('#technicians').find(:xpath, 'option[2]').unselect_option  
+          find('#technicians').find(:xpath, 'option[3]').unselect_option  
+        end
+        
+        it "should not create an analysis type" do
+          expect{ click_button "Update" }.to change{AnalysisType.count}.by(0)
+        end             
+        
+        describe "should return an error and revert back" do
+          before { click_button "Update" }
+          it { should have_content('1 error') }
+          it { should have_selector('h2', text: "Edit Analysis Type "+@analysis_type.id.to_s) }
+        end
+      end
+
       describe "providing invalid information" do   
         before do
           fill_in 'analysis_type_name'  , with: 'a'*81
           fill_in 'analysis_type_instrument'  , with: 'Dummy Instrument'
           fill_in 'analysis_type_description', with: 'This is a description'              
+          find('#technicians').find(:xpath, 'option[2]').unselect_option  
         end
         
         it "should not create an analysis type" do
@@ -473,7 +553,9 @@ RSpec.describe "AnalysisTypes", type: :feature do
   describe "Analysis Type Deletion" do
     
     before do 
-      @analysis_type = FactoryGirl.create(:analysis_type) 
+      @analysis_type = FactoryGirl.build(:analysis_type) 
+      @analysis_type.technicians << technician
+      @analysis_type.save
       sign_in superuser
       visit analysis_type_path(@analysis_type)
     end

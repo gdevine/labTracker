@@ -248,9 +248,20 @@ RSpec.describe "Menu Panel - ", type: :feature do
           expect(page).to have_content('Available Analysis Types')
         end
       end
-      
-      describe "and clicking the Create New link" do
+
+      describe "and clicking the Create New link with technicians in the system" do
         before do
+          click_link('analysis_types_new')
+        end
+    
+        it "should give an warning about no technicians" do
+          expect(page).to have_content('New Analysis Types cannot be added until at least one Technician is added to the system. Contact the admin to do this.')
+        end
+      end
+      
+      describe "and clicking the Create New link with technicians in the system" do
+        before do
+          @tech1 = FactoryGirl.create(:technician)
           click_link('analysis_types_new')
         end
     

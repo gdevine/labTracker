@@ -6,6 +6,13 @@ class AnalysisTypesController < ApplicationController
   end
   
   def new
+    if User.where(role:'technician').count == 0
+      flash[:error] = "New Analysis Types cannot be added until at least one Technician is added to the system. Contact the admin to do this."
+      redirect_to root_url
+    else
+      @analysis_type = AnalysisType.new
+      @analysis_type.analysis_type_users.build
+    end
   end
   
   def create
@@ -24,6 +31,7 @@ class AnalysisTypesController < ApplicationController
   end
   
   def edit
+    # @analysis_type = AnalysisType.find(params[:id])
   end
   
   def update
@@ -45,7 +53,7 @@ class AnalysisTypesController < ApplicationController
   private
 
     def analysis_type_params
-      params.require(:analysis_type).permit(:name, :instrument, :description)
+      params.require(:analysis_type).permit(:name, :instrument, :description, :technician_ids=> [])
     end
 
 end

@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
   has_many :analysis_types, :through => :instrument_users
   
   #return users in alphabetical surname order
-  default_scope -> { order('surname ASC') }
+  # default_scope -> { order(surname: :asc) }
   
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
