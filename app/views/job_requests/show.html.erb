@@ -1,0 +1,90 @@
+<% provide(:title, 'Job Request View') %>
+<% provide(:pageheading, 'Job Request '+ @job_request.id.to_s) %>
+
+<!-- Add edit/delete buttons if authorized -->
+
+<% if @job_request.researcher == current_user %> 
+	<div class="row bottomspace">  
+	  <div class="col-xs-12 col-sm-2 col-sm-push-10">
+			<a class="btn btn-block btn-info" data-toggle="dropdown" href="#" id="options_button">
+			  Options
+			  <span class="caret"></span>
+			</a>
+			<ul class="dropdown-menu">
+			  <li><%= link_to "Edit Job Request", edit_job_request_path(id:@job_request.id) %> </li>
+			  <li><%= link_to "Delete Job Request", @job_request, :method => :delete, data: { confirm: "Are you sure?" }, :class=>"redtext" %></li>
+		  </ul>
+		</div>
+	</div>
+<% end %>
+
+
+<div class="row topspace20">
+  <div class="col-md-12">	
+	
+		<div class="row">
+		  <div class="col-md-offset-3 col-md-3">
+		    <p class="text-left">Job Request ID</p>
+		  </div>   
+		  <div class="col-md-6">
+		    <p class="text-muted"><%= @job_request.id %></p>
+		  </div>
+		</div>
+		
+		<div class="row">
+		  <div class="col-md-offset-3 col-md-3">
+		    <p class="text-left">Analysis Type</p>
+		  </div>   
+		  <div class="col-md-6">
+		    <p class="text-muted"><%= @job_request.analysis_type.name %></p>
+		  </div>
+		</div>
+		
+		<div class="row">
+		  <div class="col-md-offset-3 col-md-3">
+		    <p class="text-left">Project</p>
+		  </div>   
+		  <div class="col-md-6">
+		    <p class="text-muted"><%= @job_request.project %></p>
+		  </div>
+		</div>
+		
+		<div class="row">
+		  <div class="col-md-offset-3 col-md-3">
+		    <p class="text-left">Samples</p>
+		  </div>   
+		  <div class="col-md-6">
+		    <p class="text-muted"><%= @job_request.samples %></p>
+		  </div>
+		</div>		
+
+		<div class="row">
+		  <div class="col-md-offset-3 col-md-3">
+		    <p class="text-left">Requested by</p>
+		  </div>   
+		  <div class="col-md-6">
+		    <p class="text-muted"><%= @job_request.researcher.fullname %></p>
+		  </div>
+		</div>
+		
+		<div class="row">
+		  <div class="col-md-offset-3 col-md-3">
+		    <p class="text-left">Requested on</p>
+		  </div>   
+		  <div class="col-md-6">
+		    <p class="text-muted"><%= @job_request.created_at.to_date.strftime('%a %b %d %Y') %></p>
+		  </div>
+		</div>
+
+		<div class="row">
+		  <div class="col-md-offset-3 col-md-3">
+		    <p class="text-left">Researcher Comments</p>
+		  </div>   
+		  <div class="col-md-6">
+		    <p class="text-muted"><%= @job_request.comments %></p>
+		  </div>
+		</div>
+
+  </div>
+  
+</div>

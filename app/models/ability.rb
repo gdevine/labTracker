@@ -34,15 +34,22 @@ class Ability
     alias_action :create, :read, :update, :destroy, :to => :crud
     
     if user.role == "superuser" && user.approved == true
-      can :crud, :all
+      can :crud, AnalysisType
+      can [:index, :show], JobRequest
     end
     
     if user.role == "technician" && user.approved == true
       can [:index, :show], AnalysisType 
+      can [:index, :show], JobRequest
     end
     
     if user.role == "researcher" && user.approved == true
       can [:index, :show], AnalysisType
+      can [:index, :show, :new, :create], JobRequest
+      
+      can [:edit, :update, :destroy], JobRequest do |job_request|
+        job_request.researcher_id == user.id
+      end
     end
     
   end

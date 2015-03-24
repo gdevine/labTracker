@@ -1,6 +1,7 @@
 class AnalysisType < ActiveRecord::Base
   has_many :analysis_type_users, :dependent => :destroy, inverse_of: :analysis_type
   has_many :technicians, -> { order :surname }, :through => :analysis_type_users, source: :user
+  has_many :job_requests, :class_name => 'JobRequest', :foreign_key => 'analysis_type_id', :dependent => :destroy
 
   accepts_nested_attributes_for :analysis_type_users
   

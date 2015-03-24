@@ -1,0 +1,20 @@
+<% if @job_requests.any? %>
+  <table class="table table-bordered table-striped table-hover" id="job_requests">
+    <thead>
+      <tr>
+        <th>Job Request ID</th>
+        <th>Analysis Type</th>
+        <th>Researcher</th>
+        <th>Project</th>
+        <th>Requested on</th>
+        <th>View?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= render partial: 'job_requests/job_requests_table', collection: @job_requests, as: :job_request %>
+    </tbody>
+  </table>
+  
+<% else %>
+  <p>No Job Requests found</p>
+<% end %>

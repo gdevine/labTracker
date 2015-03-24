@@ -1,0 +1,51 @@
+<% provide(:title, 'New Job Request') %>
+<% provide(:pageheading, 'Create New Job Request') %>
+
+<%= form_for @job_request, :html => {:class => "form-horizontal"} do |f| %>
+  <%= render 'shared/error_messages', object: f.object %>
+  
+  <div class="form-group">
+    <%= f.label :analysis_type_id, 'Analysis Type *', :class => "col-lg-2 control-label" %>
+    <div class="col-lg-8">
+      <%= collection_select(:job_request, :analysis_type_id, AnalysisType.all, :id, :name, {include_blank: 'None selected'}, {:class=>"form-control", :id=>'analysis_types'} ) %>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label :project, 'Project *', :class => "col-lg-2 control-label" %>
+    <div class="col-lg-8">
+      <%= f.text_field :project, :class => "form-control" %>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label :samples, "Samples", :class => "col-lg-2 control-label" %>
+    <div class="col-lg-8">
+      <%= f.text_field :samples, :class => "form-control" %>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label :comments, "Comments", :class => "col-lg-2 control-label" %>
+    <div class="col-lg-8">
+      <%= f.text_area :comments, :class => "form-control" %>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <div class="col-md-4 col-md-offset-4 topspace50 bottomspace">
+      <%= f.submit "Submit", :class => "btn btn-large btn-primary" %>
+    </div>
+  </div>
+  
+<% end %>
+
+<script type="text/javascript">
+$('#analysis_types').multiselect({
+    buttonClass : "form-control",
+    buttonWidth: "50%",
+    maxHeight: 400,
+    enableCaseInsensitiveFiltering: true,
+    buttonWidth: '350px'
+});
+</script>

@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   has_many :analysis_type_users, :dependent => :destroy, inverse_of: :user
   has_many :analysis_types, :through => :instrument_users
+  has_many :job_requests, :class_name => 'JobRequest', :foreign_key => 'researcher_id', :dependent => :restrict_with_exception
   
   #return users in alphabetical surname order
   # default_scope -> { order(surname: :asc) }

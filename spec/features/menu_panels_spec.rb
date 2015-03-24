@@ -249,7 +249,7 @@ RSpec.describe "Menu Panel - ", type: :feature do
         end
       end
 
-      describe "and clicking the Create New link with technicians in the system" do
+      describe "and clicking the Create New link with no technicians in the system" do
         before do
           click_link('analysis_types_new')
         end
@@ -272,7 +272,130 @@ RSpec.describe "Menu Panel - ", type: :feature do
       end
       
     end
+  
+  
+  end
     
+    
+    
+  # Job Request dropdown   
+  describe "Opening the Job Requests dropdown" do
+  
+    describe "when not signed in" do
+      before { visit root_path }
+      it 'should not be possible' do
+        expect(page).not_to have_link('Job Requests')
+        expect(page).not_to have_link('job_requests_index')
+      end
+    end
+
+    describe "when signed in as a researcher" do
+      before do 
+        sign_in(researcher) 
+        visit root_path
+      end
+      
+      it "should show a main link for 'Job Requestss'" do
+        expect(page).to have_link('Job Requests')
+      end
+      it "should show a link for 'View All' Job Requests" do
+        expect(page).to have_link('job_requests_index')
+      end
+      it "should show a link for 'Create New' Job Request" do
+        expect(page).to have_link('job_requests_new')
+      end  
+          
+      describe "and clicking the View All link" do
+        before do
+          click_link('job_requests_index')
+        end
+    
+        it "should open up the View All page" do
+          expect(page).to have_content('Job Requests')
+        end
+      end
+    
+      describe "and clicking the Create New link with no analysis types in the system" do
+        before do
+          click_link('job_requests_new')
+        end
+    
+        it "should give an warning about no analysis types" do
+          expect(page).to have_content('New Job Requests cannot be created until at least one Analysis Type is added to the system. Contact the admin to do this.')
+        end
+      end
+      
+      describe "and clicking the Create New link with analysis types in the system" do
+        before do
+          @at1 = FactoryGirl.create(:analysis_type)
+          click_link('job_requests_new')
+        end
+    
+        it "should open up the Create New page" do
+          expect(page).to have_title('New Job Request')
+          expect(page).to have_selector('h2', text: "New Job Request")
+        end
+      end
+    
+    end
+    
+    describe "when signed in as a technician" do
+      before do 
+        sign_in(technician) 
+        visit root_path
+      end
+      
+      it "should show a main link for 'Job Requests'" do
+        expect(page).to have_link('Job Requests')
+      end
+      it "should show a link for 'View All' Job Requests" do
+        expect(page).to have_link('job_requests_index')
+      end
+      it "should not show a link for 'Add New' Job Request" do
+        expect(page).not_to have_link('job_requests_new')
+      end  
+          
+      describe "and clicking the View All link" do
+        before do
+          click_link('job_requests_index')
+        end
+    
+        it "should open up the View All page" do
+          expect(page).to have_content('Job Requests')
+        end
+      end
+    end
+    
+    describe "when signed in as a superuser" do
+      before do 
+        sign_in(superuser) 
+        visit root_path
+      end
+      
+      it "should show a main link for 'Job Requests'" do
+        expect(page).to have_link('Job Requests')
+      end
+      it "should show a link for 'View All' Job Requests" do
+        expect(page).to have_link('job_requests_index')
+      end
+      it "should not show a link for 'Add New' Job Request" do
+        expect(page).not_to have_link('job_requests_new')
+      end  
+          
+      describe "and clicking the View All link" do
+        before do
+          click_link('job_requests_index')
+        end
+    
+        it "should open up the View All page" do
+          expect(page).to have_content('Job Requests')
+        end
+      end
+      
+    end
+  
+  
+  end    
     
 #       
       # describe "and clicking the View Lost Instruments link" do
@@ -326,9 +449,6 @@ RSpec.describe "Menu Panel - ", type: :feature do
         # end
       # end
     
-   
-  end
-#   
 #   
 # # Resources menu
 #   

@@ -2,9 +2,7 @@ require 'rails_helper'
 
 RSpec.describe AnalysisType, type: :model do
   before do 
-    @analysis_type = FactoryGirl.build(:analysis_type) 
-    @technician = FactoryGirl.build(:technician)
-    @analysis_type.technicians << @technician
+    @analysis_type = FactoryGirl.create(:analysis_type) 
   end
   
   subject { @analysis_type }
@@ -36,9 +34,7 @@ RSpec.describe AnalysisType, type: :model do
   #Uniqueness checks
   describe "when analysis type name is not unique" do    
     before do
-      @at_same_name = FactoryGirl.build(:analysis_type) 
-      @at_same_name.technicians << @technician
-      @at_same_name.save
+      @at_same_name = FactoryGirl.create(:analysis_type) 
       @analysis_type.name = @at_same_name.name
     end
     
@@ -53,7 +49,7 @@ RSpec.describe AnalysisType, type: :model do
     
     before do 
       #get rid of the initial technician so to compare the order correctly  
-      @analysis_type.technicians.destroy(@technician)
+      @analysis_type.technicians.destroy(@analysis_type.technicians.first)
       # Add new technicians
       @analysis_type.technicians << technician_b
       @analysis_type.technicians << technician_c

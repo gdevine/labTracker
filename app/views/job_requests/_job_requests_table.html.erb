@@ -1,0 +1,8 @@
+<tr>
+  <td><%= job_request.id %></td>
+  <td><%= job_request.analysis_type.name %> </td>
+  <td><%= job_request.researcher.fullname %> </td>
+  <td><%= job_request.project %> </td>
+  <td><%= job_request.created_at.strftime('%a %b %d %Y') %> </td>
+  <td><%= link_to "View", job_request %></td>
+</tr>

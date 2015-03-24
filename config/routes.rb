@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   
   resources :users
   resources :analysis_types
+  resources :job_requests
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
